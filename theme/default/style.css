@@ -1,0 +1,218 @@
+html {
+    font-family: Arial;
+    font-size: 12px;
+    color: #fff;
+    background: url('images/bg.png') repeat-x #555;
+}
+
+body {
+    margin: 0;
+}
+
+a {
+    color: #40C6FF;
+}
+
+a:hover {
+    color: #fff;
+}
+
+h1 {
+    font-size: 50px;
+    margin: 0;
+    padding: 10px;
+    font-weight: normal;
+    font-family: verdana;
+    background: url('images/logoBG.png') repeat-x #26BEFF;
+    color: #111;
+    border: 2px solid #111;
+}
+
+h2 {
+    font-size: 24px;
+    font-weight: normal;
+    margin: 0;
+    padding: 15px;
+}
+
+form {
+    padding: 10px;
+    border: 1px solid #111;
+}
+
+input {
+    padding: 3px;
+    background: #111;
+    border: 1px solid #000000;
+    color: #fff;
+}
+
+label {
+    width: 100px;
+    float: left;
+    margin: 5px;
+}
+
+#wrap {
+    margin: 0 auto;
+    width: 898px;
+    background: #343434;
+    padding: 10px;
+    border: 1px solid #111;
+    border-top: none;
+    border-bottom: none;
+}
+
+#nav {
+    padding: 5px 5px 8px 10px;
+    background: #111;
+}
+
+#nav a {
+    margin-right: 5px;
+}
+
+table {
+    width: 100%;
+    background:#111;
+    margin: 0 0 10px 0;
+}
+
+td {
+    padding: 8px;
+    font-size: 13px;
+    background: #222;
+}
+
+#forumNav {
+    background: #111;
+    padding: 5px;
+    margin: 10px 0 10px 0;
+}
+
+.tableKey td {
+    background: url('images/tableKeyBG.png') repeat-x #111111;
+    font-size: 12px;
+    padding: 5px 5px 5px 10px;
+}
+
+.catName td, .topicsKey td, .postKey td, .appTitle {
+    background: url('images/tableTitleBG.png') repeat-x #26BEFF;
+    color: #000;
+    font-size: 12px;
+    font-weight: bold;
+    border: 1px solid #1694C9;
+}
+
+#footer {
+    width: 900px;
+    margin: 0 auto;
+    text-align: center;
+    font-size: 12px;
+    background: #111;
+    padding: 10px;
+}
+
+#topicStats, #currentCategory {
+    padding: 0 10px 10px 10px;
+    font-size: 11px;
+    color: #ddd;
+}
+
+.miniProfile {
+    height: 50px;
+    vertical-align: top;
+    width: 170px;
+    text-align: center;
+}
+
+.postContent {
+    vertical-align: top;
+}
+
+.postUsername {
+    font-size: 18px;
+    text-align: center;
+    padding-top: 5px;
+}
+
+.error {
+    color: #fff;
+    padding: 8px;
+    background: #F53131;
+    border: 1px solid #CC0606;
+    margin-bottom: 12px;
+}
+
+.submitButton:hover {
+    cursor: pointer;
+}
+
+.postReply, .newTopic {
+    float: right;
+}
+
+.button a {
+    padding: 5px 7px 5px 7px;
+    text-decoration: none;
+    background: #26BEFF;
+    color: #111;
+    font-weight: bold;
+    border: 1px solid #1694C9;
+}
+
+.button a:hover {
+    color: #fff;
+}
+
+#postContent {
+    width: 75%;
+    height: 200px;
+    font-family: verdana;
+    font-size: 12px;
+    padding: 3px;
+    background: #111;
+    border: 1px solid #000000;
+    color: #fff;
+}
+
+.pagination {
+    font-size: 14px;
+    
+}
+
+#forumsLastPost {
+    vertical-align: top;
+    font-size: 12px;
+}
+
+.topicsKey, .postsKey {
+    width: 50px;
+    text-align: center;
+}
+
+.forumTopicCount, .forumPostCount {
+    text-align: center;
+}
+
+.lastPostTimestamp {
+    color: #777;
+    font-size: 11px;
+}
+
+.forumName {
+    font-size: 15px;
+}
+
+.postUserInfo {
+    font-size: 12px;
+    margin: 5px;
+    padding: 5px;
+    border: 1px solid #111;
+    background: #343434;
+    text-align: left;
+}
+
+.postUserRank {
+    font-size: 11px;
+}
