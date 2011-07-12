@@ -181,7 +181,7 @@ td {
     
 }
 
-#forumsLastPost {
+.forumsLastPost, .topicLastReply {
     vertical-align: top;
     font-size: 12px;
 }
@@ -195,7 +195,7 @@ td {
     text-align: center;
 }
 
-.lastPostTimestamp {
+.lastPostTimestamp, .lastReplyTimestamp {
     color: #777;
     font-size: 11px;
 }
@@ -215,4 +215,8 @@ td {
 
 .postUserRank {
     font-size: 11px;
+}
+
+#statistics {
+    font-size: 12px;
 }

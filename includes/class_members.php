@@ -88,6 +88,25 @@
                 $error = new error('Error: Couldn\'t get memberCount.');
             }
         }
+        
+        public function usersOnline($separator = ', ')
+        {
+            $forum = new forum();
+            $timestamp = $forum->curTimestamp() - (60 * 30);
+        
+            $selectOnlineUsers = mysql_query("SELECT id, username, rank FROM forum_members WHERE latestActivityTimestamp > '$timestamp'");
+        
+            $usersOnlineStr = false;
+            while($getOnlineUser = mysql_fetch_array($selectOnlineUsers)){
+                if($usersOnlineStr){
+                    $usersOnlineStr = $separator . '<a href="viewprofile.php?id=' . $getOnlineUser['id'] . '">' . $getOnlineUser['username'] . '</a>';
+                } else {
+                    $usersOnlineStr = '<a href="viewprofile.php?id=' . $getOnlineUser['id'] . '">' . $getOnlineUser['username'] . '</a>';
+                }
+            }
+            
+            return $usersOnlineStr;
+        }
     }
 
 ?>

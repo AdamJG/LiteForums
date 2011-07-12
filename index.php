@@ -9,6 +9,8 @@
     $forum->viewNav(' &raquo; ');
     
     $forum->viewIndex();
+    
+    $forum->viewStatistics();
 
     include_once('theme/default/footer.php');
     

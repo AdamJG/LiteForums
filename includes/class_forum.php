@@ -24,7 +24,7 @@
             $this->appName = false;
         }
         
-        public function viewNav($seperator)
+        public function viewNav($seperator = ' &raquo; ')
         {
             echo '<div id="forumNav">';
         
@@ -93,7 +93,7 @@
                             if($lastPost['topic']){
                                 $user = $members->getInfo($lastPost['username']);
                                 
-                                echo '<td id="forumsLastPost">
+                                echo '<td class="forumsLastPost">
                                         <div class="lastPostTimestamp">'. date('d M Y, H:i', $lastPost['timestamp']) . '</div>
                                         In <a href="viewtopic.php?id='. $lastPost['topic'] . '#' . $lastPost['id'] . '">' . $this->getTopicName($lastPost['topic']) . '</a><br />
                                         By <a href="viewprofile.php?id=' . $user['id'] . '">' . $lastPost['username'] . '</a>
@@ -101,13 +101,13 @@
                             } elseif($lastPost['id']){
                                 $user = $members->getInfo($lastPost['username']); 
                             
-                                echo '<td id="forumsLastPost">
+                                echo '<td class="forumsLastPost">
                                         <div class="lastPostTimestamp">'. date('d M Y, H:i', $lastPost['timestamp']) . '</div>
                                         In <a href="viewtopic.php?id='. $lastPost['id'] . '">' . $lastPost['name'] . '</a><br />
                                         By <a href="viewprofile.php?id=' . $user['id'] . '">' . $lastPost['username'] . '</a>
                                     </td>';
                             } else {
-                                echo '<td id="forumsLastPost">None</td>';
+                                echo '<td class="forumsLastPost">None</td>';
                             }
                             
                             echo '</tr>';
@@ -146,19 +146,32 @@
                 echo '<div id="currentCategory">Category: <a href="#">' . $this->getCategoryName($forum['cat']) . '</a></div>';
                 
                 if(mysql_num_rows($selectTopics) > 0){
-                    echo '<table><tr class="topicsKey"><td width="25px"></td><td>Name</td><td>Username</td><td>Views</td><td>Posts</td><td>Last Post</td></td></tr>';
+                    echo '<table><tr class="topicsKey"><td width="25px"></td><td>Name</td><td>Username</td><td>Views</td><td>Replies</td><td>Latest Reply</td></td></tr>';
                 
                     while($topic = mysql_fetch_array($selectTopics)){
                         $user = $members->getInfo($topic['username']);
+                        
+                        $lastPost = $this->lastPostFromTopic($topic['id']);
                         
                         echo '<tr>
                             <td><a href="viewforum.php?id=' . $forum['id'] . '"><img src="theme/default/images/forumIcon.png" alt="" /></a></td>
                             <td><a href="viewtopic.php?id=' . $topic['id'] . '">' . $topic['name'] . '</a></td>
                             <td><a href="viewprofile.php?id=' . $user['id'] . '">' . $user['username'] . '</td>
                             <td>' . $topic['views'] . '</td>
-                            <td>' . $this->topicPostCount($topic['id']) . '</td>
-                            <td>last post</td>
-                        </tr>';
+                            <td>' . $this->topicPostCount($topic['id']) . '</td>';
+                            
+                        if($lastPost['id']){
+                            $lastPostUser = $members->getInfo($lastPost['username']);
+                        
+                            echo '<td class="topicLastReply">
+                                <div class="lastReplyTimestamp">' . date('d M Y, H:i', $lastPost['timestamp']) . '</div>
+                                By <a href="viewprofile.php?id=' . $lastPostUser['id'] . '">' . $lastPostUser['username'] . '</a>
+                            </td>';
+                        } else {
+                            echo '<td>None</td>';
+                        }
+                        
+                        echo '</tr>';
                     }
                     
                     echo '</table>';
@@ -291,9 +304,10 @@
         public function forumPostCount($forumID)
         {
             $selectPosts = mysql_query("SELECT id FROM forum_posts WHERE forum = {$forumID}");
+            $selectTopics = mysql_query("SELECT id FROM forum_topics WHERE forum = {$forumID}");
             
             if($selectPosts){
-                return mysql_num_rows($selectPosts);
+                return (mysql_num_rows($selectPosts) + mysql_num_rows($selectTopics));
             } else {
                 $error = new error('Error: Couldn\'t count posts in forum ID = ' . htmlentities($forumID));
             }
@@ -502,6 +516,43 @@
             $post = mysql_fetch_assoc($selectPost);
             
             return $post;
+        }
+        
+        public function viewStatistics()
+        {
+            $members = new members();
+        
+            echo '<table>';
+            
+            echo '<tr class="catName"><td colspan="10">Forum Infomation</td></tr>
+                <tr class="tableKey"><td>Users Online (In the past 30 minutes)</td></tr>
+                <tr><td>' . $members->usersOnline() . '</td></tr>
+                <tr class="tableKey"><td>Statistics</td></tr>
+                <tr><td id="statistics">Total Posts: <strong>' . $this->totalPosts() . '</strong> &#183; Total Topics: <strong>' . $this->totalTopics() . '</strong> &#183; Total Members: <strong>' . $members->memberCount() . '</strong></td></tr>';
+            
+            echo '</table>';
+        }
+        
+        public function totalTopics()
+        {
+            $selectTopics = mysql_query("SELECT id FROM forum_topics");
+            
+            if($selectTopics){
+                return mysql_num_rows($selectTopics);
+            } else {
+                $error = new error('Error: Can\'t retrieve total posts');
+            }
+        }
+        
+        public function totalPosts()
+        {
+            $selectPosts = mysql_query("SELECT id FROM forum_posts");
+            
+            if($selectPosts){
+                return (mysql_num_rows($selectPosts) + $this->totalTopics());
+            } else {
+                $error = new error('Error: Can\'t retrieve total posts');
+            }
         }
     }
 
