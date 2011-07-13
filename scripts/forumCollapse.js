@@ -6,11 +6,9 @@ function collapseCat(catID)
 
 		$('#collapseForum-c' + catID).html('<a href="javascript: void(0);" onclick="expandCat(\'' + catID + '\');">&#x25BC;</a>');
 
-			
-		document.cookie = 'collapseCat' + catID + '=1; expires=date;';
 		var date = new Date;
-		date.setFullYear(date.getFullYear());
-		document.cookie = 'collapseCat' + catID + '=1; expires=' + CookieDate.toGMTString() + ';';
+		date.setFullYear(date.getFullYear() + 1);
+		document.cookie = 'collapseCat' + catID + '=1; expires=' + date.toGMTString() + ';';
 	});
 }
 
