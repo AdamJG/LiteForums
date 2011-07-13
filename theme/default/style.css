@@ -5,6 +5,10 @@ html {
     background: url('images/bg.png') repeat-x #555;
 }
 
+img {
+    border: none
+}
+
 body {
     margin: 0;
 }

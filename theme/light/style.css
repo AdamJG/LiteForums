@@ -5,6 +5,10 @@ html {
     background: #fff;
 }
 
+img {
+    border: none
+}
+
 body {
     margin: 0;
 }
