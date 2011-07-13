@@ -1,8 +1,7 @@
 <?php
 
     include_once('core.php');
-
-    $forum = new forum();
+    
     $forum->registerApp('New Topic');
     
     if(!$_SESSION['username']){

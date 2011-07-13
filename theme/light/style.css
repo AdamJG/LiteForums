@@ -245,3 +245,11 @@ td {
     width: auto;
     float: none;
 }
+
+.collapseForum {    
+    float: right;
+}
+
+.collapseForum a {
+    color: #343434;
+    text-decoration: none;

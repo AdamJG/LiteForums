@@ -4,8 +4,6 @@
  
     include_once('theme/' . $config['theme'] . '/header.php');
     
-    $forum = new forum();
-    
     $forum->viewNav(' &raquo; ');
     
     $forum->viewIndex();

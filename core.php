@@ -34,4 +34,6 @@
         $config['theme'] = $_COOKIE['lf_theme'];
     }
 
+    $forum = new forum();
+
 ?>

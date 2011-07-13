@@ -2,7 +2,6 @@
 
     include_once('core.php');
 
-    $forum = new forum();
     $forum->registerApp('Profile');
     
     $members = new members();

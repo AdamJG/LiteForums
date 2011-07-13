@@ -123,6 +123,13 @@
             
             return $usersOnlineStr;
         }
+
+        public function getGravatar($email)
+        {
+            $hash = md5(strtolower(trim($email)));
+
+            return 'http://www.gravatar.com/avatar/' . $hash;
+        }
     }
 
 ?>

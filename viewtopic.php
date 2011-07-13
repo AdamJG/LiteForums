@@ -1,9 +1,7 @@
 <?php
 
     include_once('core.php');
- 
-    $forum = new forum();
-    
+
     $forum->updateTopicViews();
  
     include_once('theme/' . $config['theme'] . '/header.php');

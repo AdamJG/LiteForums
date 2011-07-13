@@ -2,7 +2,6 @@
 
     include_once('core.php');
 
-    $forum = new forum();
     $forum->registerApp('Post Reply');
     
     if(!$_SESSION['username']){

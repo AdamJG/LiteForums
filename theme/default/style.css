@@ -257,3 +257,12 @@ td {
     background: #26BEFF;
     color: #111;
 }
+
+.collapseForum {    
+    float: right;
+}
+
+.collapseForum a {
+    color: #111;
+    text-decoration: none;
+}

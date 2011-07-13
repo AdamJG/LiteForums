@@ -78,15 +78,25 @@
                     $selectForums = mysql_query("SELECT * FROM forum_forums WHERE cat = {$cat['id']}");
                     
                     if($selectForums){
-                        echo '<table><tr class="catName"><td colspan="10">' . $cat['name'] . '</td></tr>
-                            <tr class="tableKey"><td width="25px"></td><td width="50%">Name</td><td class="topicsKey">Topics</td><td class="postsKey">Posts</td><td>Last Post</td></tr>';
+                        echo '<script type="text/javascript">checkForCollapse(\'' . $cat['id'] . '\');</script>
+                        <table id="c' . $cat['id'] . '">
+                        <tr class="catName">
+                            <td colspan="10">' . $cat['name'] . '<div class="collapseForum" id="collapseForum-c' . $cat['id'] . '"><a href="javascript: void(0);" onclick="collapseCat(' . $cat['id'] . ');">&#x25B2;</a></div></td>
+                        </tr>
+                        <tr class="tableKey">
+                            <td width="25px"></td>
+                            <td width="50%">Name</td>
+                            <td class="topicsKey">Topics</td>
+                            <td class="postsKey">Posts</td>
+                            <td>Last Post</td>
+                        </tr>';
                         
                         $members = new members();
                         
                         while($forum = mysql_fetch_array($selectForums)){
                             $lastPost = $this->lastPostFromForum($forum['id']);
                             
-                            echo '<tr>
+                            echo '<tr class="forum">
                                 <td><a href="viewforum.php?id=' . $forum['id'] . '"><img src="theme/' . $config['theme'] . '/images/forumIcon.png" alt="" /></a></td>
                                 <td class="forumName"><a href="viewforum.php?id=' . $forum['id'] . '">' . $forum['name'] . '</a></td>
                                 <td class="forumTopicCount">' . $this->forumTopicCount($forum['id']) . '</td>
@@ -639,6 +649,18 @@
                     <input type="submit" value="Go" />
                 </form>
             </div>';
+        }
+
+        public function includeHeaderFiles()
+        {
+            global $config;
+
+            echo '<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+            <link rel="stylesheet" type="text/css" href="theme/' . $config['theme'] . '/style.css" />
+            <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>';
+            if($this->currentPage() == 'index.php'){
+                echo '<script type="text/javascript" src="scripts/forumCollapse.js"></script>';
+            }
         }
     }
 
