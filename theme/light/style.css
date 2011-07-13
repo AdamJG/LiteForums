@@ -1,8 +1,8 @@
 html {
     font-family: Arial;
     font-size: 12px;
-    color: #fff;
-    background: url('images/bg.png') repeat-x #555;
+    color: #000;
+    background: #fff;
 }
 
 body {
@@ -10,11 +10,11 @@ body {
 }
 
 a {
-    color: #40C6FF;
+    color: #333;
 }
 
 a:hover {
-    color: #fff;
+    color: #000;
 }
 
 h1 {
@@ -23,9 +23,9 @@ h1 {
     padding: 10px;
     font-weight: normal;
     font-family: verdana;
-    background: url('images/logoBG.png') repeat-x #26BEFF;
-    color: #111;
-    border: 2px solid #111;
+    background: #eeeeee;
+    color: #343434;
+    border: 2px solid #ddd;
 }
 
 h2 {
@@ -33,18 +33,19 @@ h2 {
     font-weight: normal;
     margin: 0;
     padding: 15px;
+    color: #343434;
 }
 
 form {
     padding: 10px;
-    border: 1px solid #111;
+    border: 1px dashed #bbb;
 }
 
 input {
     padding: 3px;
-    background: #111;
-    border: 1px solid #000000;
-    color: #fff;
+    background: #fff;
+    border: 1px solid #ddd;
+    color: #343434;
 }
 
 label {
@@ -55,68 +56,70 @@ label {
 
 #wrap {
     margin: 0 auto;
-    width: 898px;
-    background: #343434;
+    background: #fff;
     padding: 10px;
-    border: 1px solid #111;
-    border-top: none;
-    border-bottom: none;
 }
 
 #nav {
     padding: 5px 5px 8px 10px;
-    background: #111;
+    background: #ddd;
 }
 
 #nav a {
     margin-right: 5px;
+    padding: 7px;
+    text-decoration: none;
+}
+
+#nav a:hover {
+    background: #343434;
+    color: #fff;
 }
 
 table {
     width: 100%;
-    background:#111;
+    background:#ddd;
     margin: 0 0 10px 0;
+    border-spacing: 1px;
 }
 
 td {
     padding: 8px;
     font-size: 13px;
-    background: #222;
+    background: #eee;
 }
 
 #forumNav {
-    background: #111;
+    background: #eee;
+    border: 1px dashed #ddd;
     padding: 5px;
     margin: 10px 0 10px 0;
 }
 
 .tableKey td {
-    background: url('images/tableKeyBG.png') repeat-x #111111;
+    background: #ddd;
     font-size: 12px;
     padding: 5px 5px 5px 10px;
 }
 
 .catName td, .topicsKey td, .postKey td, .appTitle {
-    background: url('images/tableTitleBG.png') repeat-x #26BEFF;
-    color: #000;
+    background: #7D7D7D;
+    color: #fff;
     font-size: 12px;
     font-weight: bold;
-    border: 1px solid #1694C9;
+    border: 1px soild #9C9C9C;
 }
 
 #footer {
-    width: 900px;
-    margin: 0 auto;
     text-align: center;
     font-size: 12px;
-    background: #111;
-    padding: 10px;
+    padding: 0 10px 10px 10px;
 }
 
 #topicStats, #currentCategory {
     padding: 0 10px 10px 10px;
     font-size: 11px;
-    color: #ddd;
+    color: #666;
 }
 
 .miniProfile {
@@ -155,14 +158,15 @@ td {
 .button a {
     padding: 5px 7px 5px 7px;
     text-decoration: none;
-    background: #26BEFF;
-    color: #111;
+    background: #eee;
+    color: #555;
     font-weight: bold;
-    border: 1px solid #1694C9;
+    border: 1px solid #ddd;
 }
 
 .button a:hover {
-    color: #fff;
+    color: #000;
+    border: 1px solid #bbb;
 }
 
 #postContent {
@@ -171,9 +175,9 @@ td {
     font-family: verdana;
     font-size: 12px;
     padding: 3px;
-    background: #111;
-    border: 1px solid #000000;
-    color: #fff;
+    background: #fff;
+    border: 1px solid #ddd;
+    color: #343434;
 }
 
 .pagination {
@@ -208,8 +212,8 @@ td {
     font-size: 12px;
     margin: 5px;
     padding: 5px;
-    border: 1px solid #111;
-    background: #343434;
+    border: 1px solid #ddd;
+    background: #fff;
     text-align: left;
 }
 
@@ -240,20 +244,4 @@ td {
     margin: 0;
     width: auto;
     float: none;
-}
-
-#pagination {
-    font-size: 11px;
-}
-
-.pageNumber {
-    padding: 3px 9px 3px 9px;
-    margin-right: 3px;
-    background: #111;
-    text-decoration: none;
-}
-
-.pageNoLink {
-    background: #26BEFF;
-    color: #111;
 }

@@ -8,7 +8,7 @@
 </head>
 <body>
 <div id="wrap">
-<h1><span style="color:#fff;">Lite</span>Forums</h1>
+<h1><span style="color:#777;">Lite</span>Forums</h1>
 <div id="nav">
     <a href="index.php">Home</a>
     <a href="index.php">Forum</a>

@@ -68,7 +68,9 @@
         }
     
         public function viewIndex()
-        {        
+        {
+            global $config;
+        
             $selectCats = mysql_query("SELECT * FROM forum_categories");
             
             if($selectCats){
@@ -85,7 +87,7 @@
                             $lastPost = $this->lastPostFromForum($forum['id']);
                             
                             echo '<tr>
-                                <td><a href="viewforum.php?id=' . $forum['id'] . '"><img src="theme/default/images/forumIcon.png" alt="" /></a></td>
+                                <td><a href="viewforum.php?id=' . $forum['id'] . '"><img src="theme/' . $config['theme'] . '/images/forumIcon.png" alt="" /></a></td>
                                 <td class="forumName"><a href="viewforum.php?id=' . $forum['id'] . '">' . $forum['name'] . '</a></td>
                                 <td class="forumTopicCount">' . $this->forumTopicCount($forum['id']) . '</td>
                                 <td class="forumPostCount">' . $this->forumPostCount($forum['id']) . '</td>';
@@ -95,7 +97,7 @@
                                 
                                 echo '<td class="forumsLastPost">
                                         <div class="lastPostTimestamp">'. date('d M Y, H:i', $lastPost['timestamp']) . '</div>
-                                        In <a href="viewtopic.php?id='. $lastPost['topic'] . '#' . $lastPost['id'] . '">' . $this->getTopicName($lastPost['topic']) . '</a><br />
+                                        In <a href="viewtopic.php?id='. $lastPost['topic'] . '&p=' . $this->pageCount($lastPost['topic']) . '#p' . $lastPost['id'] . '">' . $this->getTopicName($lastPost['topic']) . '</a><br />
                                         By <a href="viewprofile.php?id=' . $user['id'] . '">' . $lastPost['username'] . '</a>
                                     </td>';
                             } elseif($lastPost['id']){
@@ -128,7 +130,9 @@
         
         public function viewForum()
         {
-            $selectTopics = mysql_query("SELECT * FROM forum_topics WHERE forum = {$this->forumID}");
+            global $config;
+        
+            $selectTopics = mysql_query("SELECT * FROM forum_topics WHERE forum = {$this->forumID} ORDER BY timestamp DESC");
             
             $selectForum = mysql_query("SELECT * FROM forum_forums WHERE id = {$this->forumID}");
             
@@ -144,17 +148,17 @@
                 }
                 
                 echo '<div id="currentCategory">Category: <a href="#">' . $this->getCategoryName($forum['cat']) . '</a></div>';
+
+                echo '<table><tr class="topicsKey"><td width="25px"></td><td>Name</td><td>Username</td><td>Views</td><td>Replies</td><td>Latest Reply</td></td></tr>';
                 
                 if(mysql_num_rows($selectTopics) > 0){
-                    echo '<table><tr class="topicsKey"><td width="25px"></td><td>Name</td><td>Username</td><td>Views</td><td>Replies</td><td>Latest Reply</td></td></tr>';
-                
                     while($topic = mysql_fetch_array($selectTopics)){
                         $user = $members->getInfo($topic['username']);
                         
                         $lastPost = $this->lastPostFromTopic($topic['id']);
                         
                         echo '<tr>
-                            <td><a href="viewforum.php?id=' . $forum['id'] . '"><img src="theme/default/images/forumIcon.png" alt="" /></a></td>
+                            <td><a href="viewforum.php?id=' . $forum['id'] . '"><img src="theme/' . $config['theme'] . '/images/forumIcon.png" alt="" /></a></td>
                             <td><a href="viewtopic.php?id=' . $topic['id'] . '">' . $topic['name'] . '</a></td>
                             <td><a href="viewprofile.php?id=' . $user['id'] . '">' . $user['username'] . '</td>
                             <td>' . $topic['views'] . '</td>
@@ -173,17 +177,17 @@
                         
                         echo '</tr>';
                     }
-                    
-                    echo '</table>';
-                    
-                    if($_SESSION['username']){
-                        echo '<div class="newTopic button"><a href="newtopic.php?f=' . $forum['id'] . '">New Topic</a></div>';
-                    }
-                    
-                    echo '<div class="pagination">Page: [1]</div>';
                 } else {
-                    echo 'No topics found.';
+                    echo '<tr><td colspan="10">No topics found.</td></tr>';
                 }
+                    
+                echo '</table>';
+                
+                if($_SESSION['username']){
+                    echo '<div class="newTopic button"><a href="newtopic.php?f=' . $forum['id'] . '">New Topic</a></div>';
+                }
+                
+                echo '<div class="pagination">Page: [1]</div>';
             } else {
                 $error = new error('Error: Couldn\'t retrieve topics in forum: ' . $this->forumID);
             }
@@ -192,41 +196,57 @@
         public function viewTopic()
         {
             global $config;
+            
+            if($_GET['p']){
+                if(($_GET['p'] - 1) < (($this->topicPostCount($this->topicID) + 1) / $config['postsPerPage'])){    
+                    $curPage = $_GET['p'];
+                } else {
+                    $error = new error('Error: Invalid page number. Page could not be found');
+                }
+            } else {
+                $curPage = 1;
+            }
         
             $selectTopic = mysql_query("SELECT * FROM forum_topics WHERE id = {$this->topicID}");
             
             if($selectTopic){
                 while($topic = mysql_fetch_array($selectTopic)){
-                    $updateViews = mysql_query("UPDATE forum_topics SET views = views + 1 WHERE id = {$this->topicID}");
-                
-                    if(!$updateViews){
-                        $error = new error('Error: Couldn\'t update topic\'s view count');
-                    }
-                    
                     echo '<h2>' . $topic['name'] . '</h2>';
                     
                     if($_SESSION['username']){
                         echo '<div class="postReply button"><a href="postreply.php?t=' . $topic['id'] . '">Post Reply</a></div>';
                     }
                     
-                    echo '<div id="topicStats">Views: ' . $topic['views'] . ', Replies: ' . $this->topicPostCount($topic['id']) . '</div>';
+                    echo '<div id="topicStats">Forum: <a href="viewforum.php?id=' . $topic['forum'] .'">' . $this->getForumName($topic['forum']) . '</a>, Views: ' . $topic['views'] . ', Replies: ' . $this->topicPostCount($topic['id']) . '</div>';
 
                     echo '<table><tr class="postKey"><td>Author</td><td>Content</td></tr>';
                     
                     $user = new members();
-                    $userInfo = $user->getInfo($topic['username']);
-
-                    echo '<tr>
-                        <td class="miniProfile">
-                            <div class="postAvatar"><img style="max-height:' . $config['maxAvatarHeight'] . 'px;max-width:' . $config['maxAvatarWidth'] . 'px;" src="' . $userInfo['avatar'] . '" alt="" /></div>
-                            <div class="postUsername"><a href="viewprofile.php?id=' . $userInfo['id'] . '">' . $userInfo['username'] . '</a></div>
-                            <div class="postUserRank">' . $userInfo['rank'] . '</div>
-                            <div class="postUserInfo">Posts: ' . $userInfo['posts'] . '</div>
-                        </td>
-                        <td class="postContent">' . $this->displayPostContent($topic['content']) . '</td>
-                    </tr>';
                     
-                    $selectPosts = mysql_query("SELECT * FROM forum_posts WHERE topic = {$this->topicID} ORDER BY timestamp ASC");
+                    if($curPage == 1){
+                        $userInfo = $user->getInfo($topic['username']);
+                    
+                        echo '<tr>
+                            <td class="miniProfile">
+                                <div class="postAvatar"><img style="max-height:' . $config['maxAvatarHeight'] . 'px;max-width:' . $config['maxAvatarWidth'] . 'px;" src="' . $userInfo['avatar'] . '" alt="" /></div>
+                                <div class="postUsername"><a href="viewprofile.php?id=' . $userInfo['id'] . '">' . $userInfo['username'] . '</a></div>
+                                <div class="postUserRank">' . $userInfo['rank'] . '</div>
+                                <div class="postUserInfo">
+                                    <span class="postUserInfoLabel">Posts:</span> ' . $userInfo['posts'] . '<br />
+                                    <span class="postUserInfoLabel">Joined:</span> ' . date('d F Y', $userInfo['regTimestamp']) . '
+                                </div>
+                            </td>
+                            <td class="postContent">' . $this->displayPostContent($topic['content']) . '</td>
+                        </tr>';
+                    }
+                    
+                    if($curPage == 1){
+                        $postLimit = '0, ' . ($config['postsPerPage'] - 1);
+                    } else {
+                        $postLimit = ((($curPage - 1) * $config['postsPerPage']) - 1) . ', ' . $config['postsPerPage'];
+                    }
+                    
+                    $selectPosts = mysql_query("SELECT * FROM forum_posts WHERE topic = {$this->topicID} ORDER BY timestamp ASC LIMIT " . $postLimit);
                     
                     if($selectPosts){
                         while($post = mysql_fetch_array($selectPosts)){
@@ -239,9 +259,12 @@
                                     <div class="postAvatar"><img style="max-height:' . $config['maxAvatarHeight'] . 'px;max-width:' . $config['maxAvatarWidth'] . 'px;" src="' . $userInfo['avatar'] . '" alt="" /></div>
                                     <div class="postUsername"><a href="viewprofile.php?id=' . $userInfo['id'] . '">' . $userInfo['username'] . '</a></div>
                                     <div class="postUserRank">' . $userInfo['rank'] . '</div>
-                                    <div class="postUserInfo">Posts: ' . $userInfo['posts'] . '</div>
+                                    <div class="postUserInfo">
+                                        <span class="postUserInfoLabel">Posts:</span> ' . $userInfo['posts'] . '<br />
+                                        <span class="postUserInfoLabel">Joined:</span> ' . date('d F Y', $userInfo['regTimestamp']) . '
+                                    </div>
                                 </td>
-                                <td class="postContent">' . $postContent . '</td>
+                                <td class="postContent" id="p' . $post['id'] . '">' . $postContent . '</td>
                             </tr>';
                         }
                     } else {
@@ -253,13 +276,40 @@
                     if($_SESSION['username']){
                         echo '<div class="postReply button"><a href="postreply.php?t=' . $topic['id'] . '">Post Reply</a></div>';
                     }
-                    
-                    echo '<div class="pagination">Page: [1]</div>';
+
+                    //pageination
+                    echo '<div class="pagination">Page: ';
+                        $page = 1;
+                        for($i = ($this->topicPostCount($topic['id']) + 1); $i > 0; $i = $i - $config['postsPerPage']){
+                            if($page != $curPage){
+                                echo '<a class="pageNumber pageLink" href="viewtopic.php?id=' . $topic['id'] . '&p=' . $page . '">' . $page . '</a>';
+                            } else {
+                                echo '<span class="pageNumber pageNoLink">' . $page . '</span>';
+                            }
+                            $page++;
+                        }
+                    echo '</div>';
                     
                     break;
                 }
             } else {
                 $error = new error('Error: Couldn\'t retrieve topic infomation');
+            }
+        }
+        
+        public function updateTopicViews()
+        {
+            if(!$_COOKIE['lf_viewed_t_' . $this->topicID]){
+                $updateViews = mysql_query("UPDATE forum_topics SET views = views + 1 WHERE id = {$this->topicID}");
+                
+                if(!$updateViews){
+                    $error = new error('Error: Couldn\'t update topic\'s view count');
+                } else {
+                    setcookie("lf_viewed_t_" . $this->topicID, 'true', time() + 60 * 60);
+                    return true;
+                }
+            } else {
+                return false;
             }
         }
         
@@ -270,6 +320,17 @@
             $content = nl2br($content);
             
             return $content;
+        }
+        
+        public function pageCount($topicID)
+        {
+            global $config;
+        
+            for($i = ($this->topicPostCount($topicID) + 1); $i > 0; $i = $i - $config['postsPerPage']){
+                $page++;
+            }
+            
+            return $page;
         }
         
         public function getForumID($topicID)
@@ -315,6 +376,8 @@
         
         public function topicPostCount($topicID)
         {
+            $topicID = mysql_real_escape_string($topicID);
+        
             $selectPosts = mysql_query("SELECT id FROM forum_posts WHERE topic = {$topicID}");
             
             if($selectPosts){
@@ -424,10 +487,12 @@
             $submitPost = mysql_query("INSERT INTO forum_posts (username, content, timestamp, topic, forum) VALUES ('$username', '$content', '$timestamp', '$topicID', '$forumID')");
                 
             if($submitPost){
+                $newPostID = mysql_insert_id();
+            
                 $members = new members();
                 $members->incrementPostCount($username);
             
-                return true;
+                return $newPostID;
             } else {
                 $error = new error('Error: Couldn\'t post reply.');
             }
@@ -525,8 +590,13 @@
             echo '<table>';
             
             echo '<tr class="catName"><td colspan="10">Forum Infomation</td></tr>
-                <tr class="tableKey"><td>Users Online (In the past 30 minutes)</td></tr>
-                <tr><td>' . $members->usersOnline() . '</td></tr>
+                <tr class="tableKey"><td>' . $members->usersOnlineCount() . ' ';
+            if($members->usersOnlineCount() == 1){
+                echo 'User';
+            } else {
+                echo 'Users';
+            }
+            echo ' Online (In the past 30 minutes)</td></tr><tr><td>' . $members->usersOnline() . '</td></tr>
                 <tr class="tableKey"><td>Statistics</td></tr>
                 <tr><td id="statistics">Total Posts: <strong>' . $this->totalPosts() . '</strong> &#183; Total Topics: <strong>' . $this->totalTopics() . '</strong> &#183; Total Members: <strong>' . $members->memberCount() . '</strong></td></tr>';
             
@@ -553,6 +623,22 @@
             } else {
                 $error = new error('Error: Can\'t retrieve total posts');
             }
+        }
+        
+        public function viewThemeChanger()
+        {
+            global $config;
+        
+            echo '<div id="themeChanger">
+                <form method="post" action="index.php">
+                    <label>Theme:</label>
+                    <select name="themeChanger">
+                        <option value="default"'; if($config['theme'] == 'default'){echo ' selected="selected"';} echo'>default</option>
+                        <option value="light"'; if($config['theme'] == 'light'){echo ' selected="selected"';} echo'>light</option>
+                    </select>
+                    <input type="submit" value="Go" />
+                </form>
+            </div>';
         }
     }
 

@@ -17,15 +17,15 @@
     
     if($_POST['postContent']){
         if($forum->checkPostContent($_POST['postContent'])){
-            $forum->postReply($topicID, $_POST['postContent'], $_SESSION['username']);
+            $newPostID = $forum->postReply($topicID, $_POST['postContent'], $_SESSION['username']);
             
-            header('location:viewtopic.php?id=' . $topicID);
+            header('location:viewtopic.php?id=' . $topicID . '&p=' . $forum->pageCount($topicID) . '#p' . $newPostID);
         } else {
             header('location:postreply.php?t=' . $topicID . '&validity=false');
         }
     }
     
-    include_once('theme/default/header.php');
+    include_once('theme/' . $config['theme'] . '/header.php');
     
     $forum->viewNav(' &raquo; ');
     
@@ -51,6 +51,6 @@
 
 <?php
 
-    include_once('theme/default/footer.php');
+    include_once('theme/' . $config['theme'] . '/footer.php');
     
 ?>

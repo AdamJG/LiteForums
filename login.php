@@ -23,7 +23,7 @@
         header('location:index.php');
     }
     
-    include_once('theme/default/header.php');
+    include_once('theme/' . $config['theme'] . '/header.php');
     
     $forum->viewNav(' &raquo; ');
     
@@ -50,6 +50,6 @@
 
 <?php
 
-    include_once('theme/default/footer.php');
+    include_once('theme/' . $config['theme'] . '/footer.php');
     
 ?>

@@ -94,15 +94,31 @@
             $forum = new forum();
             $timestamp = $forum->curTimestamp() - (60 * 30);
         
-            $selectOnlineUsers = mysql_query("SELECT id, username, rank FROM forum_members WHERE latestActivityTimestamp > '$timestamp'");
+            $selectOnlineUsers = mysql_query("SELECT id, username, rank FROM forum_members WHERE latestActivityTimestamp >= '$timestamp'");
         
             $usersOnlineStr = false;
             while($getOnlineUser = mysql_fetch_array($selectOnlineUsers)){
                 if($usersOnlineStr){
-                    $usersOnlineStr = $separator . '<a href="viewprofile.php?id=' . $getOnlineUser['id'] . '">' . $getOnlineUser['username'] . '</a>';
+                    $usersOnlineStr = $usersOnlineStr . $separator . '<a href="viewprofile.php?id=' . $getOnlineUser['id'] . '">' . $getOnlineUser['username'] . '</a>';
                 } else {
                     $usersOnlineStr = '<a href="viewprofile.php?id=' . $getOnlineUser['id'] . '">' . $getOnlineUser['username'] . '</a>';
                 }
+            }
+            
+            return $usersOnlineStr;
+        }
+        
+        public function usersOnlineCount()
+        {
+            $forum = new forum();
+            $timestamp = $forum->curTimestamp() - (60 * 30);
+        
+            $selectOnlineUsers = mysql_query("SELECT id, username, rank FROM forum_members WHERE latestActivityTimestamp >= '$timestamp'");
+        
+            if($selectOnlineUsers){
+                return mysql_num_rows($selectOnlineUsers);
+            } else {
+                $error = new error('Error: Can\'t retrieve users online count.');
             }
             
             return $usersOnlineStr;

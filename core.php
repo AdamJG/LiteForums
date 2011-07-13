@@ -23,5 +23,15 @@
         $members = new members();
         $members->updateLatestActivity();
     }
+    
+    if($_POST['themeChanger']){
+        setcookie('lf_theme', $_POST['themeChanger'], time() + 60 * 60 * 24 * 365);
+        header('location: index.php');
+    }
+    
+    if($_COOKIE['lf_theme']){
+        //need to check if theme exists
+        $config['theme'] = $_COOKIE['lf_theme'];
+    }
 
 ?>
