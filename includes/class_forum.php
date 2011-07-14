@@ -141,8 +141,24 @@
         public function viewForum()
         {
             global $config;
+
+            if($_GET['p']){
+                if(($_GET['p'] - 1) < ($this->forumTopicCount($this->forumID) / $config['topicsPerPage'])){    
+                    $curPage = $_GET['p'];
+                } else {
+                    $error = new error('Error: Invalid page number. Page could not be found');
+                }
+            } else {
+                $curPage = 1;
+            }
+
+            if($curPage == 1){
+                $topicLimit = '0, ' . $config['topicsPerPage'];
+            } else {
+                $topicLimit = (($curPage - 1) * $config['topicsPerPage']) . ', ' . $config['topicsPerPage'];
+            }
         
-            $selectTopics = mysql_query("SELECT * FROM forum_topics WHERE forum = {$this->forumID} ORDER BY timestamp DESC");
+            $selectTopics = mysql_query("SELECT * FROM forum_topics WHERE forum = {$this->forumID} ORDER BY pinned DESC, timestamp DESC LIMIT " . $topicLimit);
             
             $selectForum = mysql_query("SELECT * FROM forum_forums WHERE id = {$this->forumID}");
             
@@ -157,7 +173,7 @@
                     echo '<div class="newTopic button"><a href="newtopic.php?f=' . $forum['id'] . '">New Topic</a></div>';
                 }
                 
-                echo '<div id="currentCategory">Category: <a href="#">' . $this->getCategoryName($forum['cat']) . '</a></div>';
+                echo '<div id="forumStats">Category: <a href="#">' . $this->getCategoryName($forum['cat']) . '</a>, Topics: ' . $this->forumTopicCount($forum['id']) . ', Posts: ' . $this->forumPostCount($forum['id']) . '</div>';
 
                 echo '<table><tr class="topicsKey"><td width="25px"></td><td>Name</td><td>Username</td><td>Views</td><td>Replies</td><td>Latest Reply</td></td></tr>';
                 
@@ -169,7 +185,13 @@
                         
                         echo '<tr>
                             <td><a href="viewforum.php?id=' . $forum['id'] . '"><img src="theme/' . $config['theme'] . '/images/forumIcon.png" alt="" /></a></td>
-                            <td><a href="viewtopic.php?id=' . $topic['id'] . '">' . $topic['name'] . '</a></td>
+                            <td>';
+                            
+                        if($topic['pinned']){
+                            echo '<span class="pinnedTopicLabel">Pinned:</span> ';
+                        }
+
+                        echo '<a href="viewtopic.php?id=' . $topic['id'] . '">' . $topic['name'] . '</a></td>
                             <td><a href="viewprofile.php?id=' . $user['id'] . '">' . $user['username'] . '</td>
                             <td>' . $topic['views'] . '</td>
                             <td>' . $this->topicPostCount($topic['id']) . '</td>';
@@ -197,7 +219,18 @@
                     echo '<div class="newTopic button"><a href="newtopic.php?f=' . $forum['id'] . '">New Topic</a></div>';
                 }
                 
-                echo '<div class="pagination">Page: [1]</div>';
+                //pageination
+                echo '<div class="pagination">Page: ';
+                    $page = 1;
+                    for($i = $this->forumTopicCount($forum['id']); $i > 0; $i = $i - $config['topicsPerPage']){
+                        if($page != $curPage){
+                            echo '<a class="pageNumber pageLink" href="viewforum.php?id=' . $forum['id'] . '&p=' . $page . '">' . $page . '</a>';
+                        } else {
+                            echo '<span class="pageNumber pageNoLink">' . $page . '</span>';
+                        }
+                        $page++;
+                    }
+                echo '</div>';
             } else {
                 $error = new error('Error: Couldn\'t retrieve topics in forum: ' . $this->forumID);
             }
@@ -236,7 +269,8 @@
                     if($curPage == 1){
                         $userInfo = $user->getInfo($topic['username']);
                     
-                        echo '<tr>
+                        echo '<tr class="postSeperator"><td></td><td><a href="viewtopic.php?id=' . $topic['id'] . '&p=' . $curPage . '">Permalink</a> - Posted ' . date('d F Y, H:i', $topic['timestamp']) . '</td></tr>
+                        <tr>
                             <td class="miniProfile">
                                 <div class="postAvatar"><img style="max-height:' . $config['maxAvatarHeight'] . 'px;max-width:' . $config['maxAvatarWidth'] . 'px;" src="' . $userInfo['avatar'] . '" alt="" /></div>
                                 <div class="postUsername"><a href="viewprofile.php?id=' . $userInfo['id'] . '">' . $userInfo['username'] . '</a></div>
@@ -264,7 +298,8 @@
                             
                             $userInfo = $user->getInfo($post['username']);
                             
-                            echo '<tr>
+                            echo '<tr class="postSeperator"><td></td><td><a href="viewtopic.php?id=' . $topic['id'] . '&p=' . $curPage . '#p' . $post['id'] . '">Permalink</a> - Posted ' . date('d F Y, H:i', $post['timestamp']) . '</td></tr>
+                            <tr>
                                 <td class="miniProfile">
                                     <div class="postAvatar"><img style="max-height:' . $config['maxAvatarHeight'] . 'px;max-width:' . $config['maxAvatarWidth'] . 'px;" src="' . $userInfo['avatar'] . '" alt="" /></div>
                                     <div class="postUsername"><a href="viewprofile.php?id=' . $userInfo['id'] . '">' . $userInfo['username'] . '</a></div>
@@ -464,7 +499,7 @@
         
         public function checkPostContent($content)
         {
-            if(strlen($content) > 10){
+            if(strlen($content) > 3){
                 return true;
             } else {
                 return false;

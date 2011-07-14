@@ -19,8 +19,10 @@
     include_once('includes/class_forum.php');
     include_once('includes/class_members.php');
     
+    $members = new members();
+    $forum = new forum();
+    
     if($_SESSION['username']){
-        $members = new members();
         $members->updateLatestActivity();
     }
     
@@ -33,7 +35,5 @@
         //need to check if theme exists
         $config['theme'] = $_COOKIE['lf_theme'];
     }
-
-    $forum = new forum();
 
 ?>

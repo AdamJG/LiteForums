@@ -55,6 +55,21 @@
                 $error = new error('Error: Couldn\'t retrieve user info.');
             }
         }
+
+        public function getIDFromUsername($username)
+        {
+            $username = mysql_real_escape_string($username);
+        
+            $selectUserID = mysql_query("SELECT id FROM forum_members WHERE username = '$username'");
+            
+            $userInfo = mysql_fetch_assoc($selectUserID);
+            
+            if($userInfo){
+                return $userInfo['id'];
+            } else {
+                $error = new error('Error: Couldn\'t retrieve user ID.');
+            }
+        }
         
         public function incrementPostCount($username)
         {

@@ -117,7 +117,7 @@ td {
     padding: 10px;
 }
 
-#topicStats, #currentCategory {
+#topicStats, #forumStats {
     padding: 0 10px 10px 10px;
     font-size: 11px;
     color: #ddd;
@@ -268,5 +268,23 @@ td {
 
 .collapseForum a {
     color: #111;
+    text-decoration: none;
+}
+
+.pinnedTopicLabel{
+    font-size: 11px;
+    color: #ddd;
+}
+
+.postSeperator td {
+    background: #111;
+    padding: 4px;
+    color: #555;
+    text-align: right;
+    font-size: 11px;
+}
+
+.postSeperator td a {
+    color: #999;
     text-decoration: none;
 }

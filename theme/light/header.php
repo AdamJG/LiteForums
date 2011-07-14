@@ -13,7 +13,7 @@
     <a href="members.php">Members</a>
     <?php if($_SESSION['username']){ ?>
     <span style="float:right">
-        Hello, <a href="#">Adam</a>
+        Hello, <a href="viewprofile.php?id=<?php echo $members->getIDFromUsername($_SESSION['username']); ?>"><?php echo $_SESSION['username']; ?></a>
         [ <a href="login.php?logout=true">Logout</a>]
     </span>
     <?php } else { ?>
